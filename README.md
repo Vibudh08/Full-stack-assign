@@ -90,7 +90,6 @@ JWT_SECRET=replace-with-a-long-random-secret-at-least-32-characters
 DNS_SERVERS=8.8.8.8,1.1.1.1
 ```
 
-`DNS_SERVERS` is optional. Never commit `.env.local`.
 
 Install dependencies and start development:
 
