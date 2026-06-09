@@ -4,10 +4,14 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
 import { ApiError } from "@/lib/api";
+import {
+  REFRESH_COOKIE_NAME,
+  REFRESH_COOKIE_PATH,
+  SESSION_MARKER_COOKIE_NAME,
+} from "@/lib/auth-constants";
 import { REFRESH_TOKEN_DURATION_SECONDS } from "@/lib/refresh-token";
 import { getServerEnv } from "@/validations/env";
 
-const REFRESH_COOKIE_NAME = "taskflow_refresh";
 export const ACCESS_TOKEN_DURATION_SECONDS = 60 * 5;
 
 type AccessTokenPayload = {
@@ -49,12 +53,25 @@ export async function verifyAccessToken(token: string) {
 
 export async function setRefreshTokenCookie(token: string) {
   const cookieStore = await cookies();
-  cookieStore.set(REFRESH_COOKIE_NAME, token, {
+  const sharedOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: REFRESH_TOKEN_DURATION_SECONDS,
-    path: "/api/auth",
+  } as const;
+
+  cookieStore.set(REFRESH_COOKIE_NAME, "", {
+    ...sharedOptions,
+    maxAge: 0,
+    path: "/",
+  });
+  cookieStore.set(REFRESH_COOKIE_NAME, token, {
+    ...sharedOptions,
+    path: REFRESH_COOKIE_PATH,
+  });
+  cookieStore.set(SESSION_MARKER_COOKIE_NAME, "active", {
+    ...sharedOptions,
+    path: "/",
   });
 }
 
@@ -69,9 +86,22 @@ export async function deleteRefreshTokenCookie() {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: 0,
-    path: "/api/auth",
+    path: REFRESH_COOKIE_PATH,
   });
-  cookieStore.delete("taskflow_session");
+  cookieStore.set(REFRESH_COOKIE_NAME, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 0,
+    path: "/",
+  });
+  cookieStore.set(SESSION_MARKER_COOKIE_NAME, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 0,
+    path: "/",
+  });
 }
 
 export async function requireUserId(request: Request) {

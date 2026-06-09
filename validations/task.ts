@@ -11,7 +11,9 @@ const taskFields = {
     .trim()
     .max(1000, "Description cannot exceed 1000 characters."),
   status: z.enum(["pending", "completed"]),
-  dueDate: z.coerce.date(),
+  dueDate: z.coerce.date({
+    error: "Due date is required.",
+  }),
 };
 
 export const createTaskSchema = z.object({

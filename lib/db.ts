@@ -1,6 +1,7 @@
 import "server-only";
 
 import dns from "node:dns";
+import dnsPromises from "node:dns/promises";
 
 import mongoose from "mongoose";
 
@@ -36,6 +37,7 @@ function configureDevelopmentDns() {
 
   if (dnsServers?.length) {
     dns.setServers(dnsServers);
+    dnsPromises.setServers(dnsServers);
   }
 
   dnsConfigured = true;
