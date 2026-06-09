@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, EyeOff, Layers3 } from "lucide-react";
+import { Eye, EyeOff, Layers3, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -8,7 +8,6 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
 import { login, register } from "@/features/auth/services/auth-api";
 import { useAuthStore } from "@/features/auth/store/auth-store";
 import { getApiErrorMessage } from "@/services/api-client";
@@ -144,13 +143,8 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
           </div>
         </Field>
         <Button type="submit" size="lg" className="w-full" disabled={loading}>
-          {loading ? (
-            <Skeleton className="h-5 w-28 bg-white/30" />
-          ) : isRegister ? (
-            "Create account"
-          ) : (
-            "Sign in"
-          )}
+         {loading && <LoaderCircle className="size-4 animate-spin" />}
+          {isRegister ? "Create account" : "Sign in"}
         </Button>
       </form>
       <p className="mt-6 text-center text-sm text-muted">
