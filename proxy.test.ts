@@ -23,4 +23,30 @@ describe("dashboard route proxy", () => {
 
     expect(proxy(request).status).toBe(200);
   });
+
+  it.each(["/login", "/register"])(
+    "redirects authenticated requests from %s to dashboard",
+    (pathname) => {
+      const request = new NextRequest(`http://localhost${pathname}`, {
+        headers: {
+          cookie: `${SESSION_MARKER_COOKIE_NAME}=active`,
+        },
+      });
+      const response = proxy(request);
+
+      expect(response.status).toBe(307);
+      expect(response.headers.get("location")).toBe(
+        "http://localhost/dashboard",
+      );
+    },
+  );
+
+  it.each(["/login", "/register"])(
+    "allows unauthenticated requests to %s",
+    (pathname) => {
+      expect(proxy(new NextRequest(`http://localhost${pathname}`)).status).toBe(
+        200,
+      );
+    },
+  );
 });

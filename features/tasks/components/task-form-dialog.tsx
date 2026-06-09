@@ -1,6 +1,5 @@
 "use client";
 
-import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateTask, useUpdateTask } from "@/features/tasks/hooks/use-tasks";
 import type { Task, TaskStatus } from "@/types/api";
@@ -123,8 +123,13 @@ export function TaskFormDialog({
               Cancel
             </Button>
             <Button disabled={pending || !hasChanges}>
-              {pending && <LoaderCircle className="size-4 animate-spin" />}
-              {task ? "Save changes" : "Create task"}
+              {pending ? (
+                <Skeleton className="h-5 w-24 bg-white/30" />
+              ) : task ? (
+                "Save changes"
+              ) : (
+                "Create task"
+              )}
             </Button>
           </div>
         </form>
