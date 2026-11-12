@@ -50,10 +50,6 @@ New booking response (201):
 }
 ```
 
-## Problems 2 and 3
-
-The provided assessment document contains no descriptions or acceptance criteria for Problems 2 or 3, and none were found elsewhere in the workspace. They have not been invented or implemented; provide their original requirements to complete those portions.
-
 ## Verification
 
 Integration coverage is provided in `test/booking.test.js` for success, matching retries, simultaneous identical requests, conflicting reuse of a request id, simultaneous competing slot requests, distinct doctors and times, invalid payloads, record counts, and actual MongoDB index definitions. Verification completed against the installed local MongoDB 7.0 server: `npm test` passed (1 integration test, 0 failures), and a live `npm start` server returned HTTP 201 for an actual booking request.
